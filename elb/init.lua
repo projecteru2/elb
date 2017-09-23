@@ -1,0 +1,1 @@
+statsd = require 'resty.statsd'

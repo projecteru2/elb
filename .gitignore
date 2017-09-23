@@ -1,0 +1,12 @@
+server
+test*
+*_temp/*
+logs
+dump.rdb
+*.pyc
+.ropeproject
+*.egg-info/
+src
+api/develop.lua
+build/*
+dist/*
