@@ -1,8 +1,8 @@
 local _M = {}
 local cjson = require 'cjson'
 local filter = {
-    ua = require 'filter.ua'
---    path = require 'path'
+    ua = require 'filter.ua',
+    path = require 'filter.path'
 }
 
 function _M.process(rule)
@@ -20,6 +20,7 @@ function _M.process(rule)
         return nil, ngx.HTTP_BAD_REQUEST
     end
     while typ ~= 'backend' do
+        ngx.log(ngx.ERR, typ..' '..cjson.encode(args))
         local f = filter[typ]
         if not f then
             return nil, ngx.HTTP_INTERNAL_SERVER_ERROR
@@ -33,6 +34,8 @@ function _M.process(rule)
             typ, args = _M.get_rule(rules, succ)
         elseif not ret and fail ~= nil then
             typ, args = _M.get_rule(rules, fail)
+        else
+            return nil, ngx.HTTP_FORBIDDEN
         end
     end
     -- I hate golang, not check anymore

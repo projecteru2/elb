@@ -1,6 +1,6 @@
 local _M = {}
-
 local string = require 'string'
+
 function _M.process(params)
     local ua, pattern = ngx.var.http_user_agent, params['pattern']
     if not ua then
