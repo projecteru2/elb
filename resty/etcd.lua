@@ -12,7 +12,7 @@ function _M:new(url)
 end
 
 function _M:_keyURL(key)
-    return self.base_url .. keyPrefix .. "/" .. key
+    return self.base_url .. keyPrefix .. key
 end
 
 function _M:_handleRequest(res)
