@@ -1,4 +1,5 @@
 local _M = {}
+local cjson = require 'cjson'
 
 function _M.split(str, separator, max, regex)
     assert(separator ~= '')
@@ -25,18 +26,9 @@ function _M.split(str, separator, max, regex)
     return record
 end
 
--- 拿第一级path
-function _M.get_first_path(uri)
-    local first_path = '/'
-    if uri ~= '/' then
-        first_path = _M.split(uri, '/', 2)[2]
-    end
-    return first_path
-end
-
 function _M.read_data()
     ngx.req.read_body()
-    local data = _M.cjson.decode(ngx.req.get_body_data())
+    local data = ngx.req.get_body_data()
     if not data then
         ngx.exit(ngx.HTTP_BAD_REQUEST)
     end
@@ -44,12 +36,14 @@ function _M.read_data()
 end
 
 function _M.say_msg_and_exit(status, message)
-    if type(message) == 'table' then
-        ngx.say(_M.cjson.encode(message))
-    else
-        ngx.say(_M.cjson.encode({msg=message}))
+    if status == ngx.HTTP_OK then
+        if type(message) == 'table' then
+            ngx.say(cjson.encode(message))
+        else
+            ngx.say(cjson.encode({msg=message}))
+        end
     end
-    ngx.exit(ngx.status)
+    ngx.exit(status)
 end
 
 return _M
