@@ -206,3 +206,17 @@ If etcd and elbname not set, elb will use `127.0.0.1:2379` and `ELB` as default.
 
 But if `STATSD` not set, elb will not calcuate domain status.
 
+### Dockerized ELB
+
+We suggest you to run elb by ERU, however this [image](https://hub.docker.com/r/projecteru2/elb/) can standalone running.
+
+```shell
+docker run -d --privileged \
+  --name eru_elb_$HOSTNAME \
+  --net host \
+  --restart always \
+  -e "ETCD=<IP:PORT>" \
+  -e "ELBNAME=<ELBNAME>" \
+  -e "STATSD=<IP:PORT>" \
+  projecteru2/elb
+```

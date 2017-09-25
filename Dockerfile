@@ -1,9 +1,8 @@
-# Dockerfile - alpine
-# https://github.com/openresty/docker-openresty
+# from https://github.com/openresty/docker-openresty
 
 FROM alpine:latest
 
-MAINTAINER Evan Wies <evan@neomantra.net>
+MAINTAINER CMGS <ilskdw@gmail.com>
 
 # Docker Build Arguments
 ARG RESTY_VERSION="1.11.2.5"
@@ -77,6 +76,10 @@ RUN apk add --no-cache --virtual .build-deps \
     && tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz \
     && curl -fSL https://openresty.org/download/openresty-${RESTY_VERSION}.tar.gz -o openresty-${RESTY_VERSION}.tar.gz \
     && tar xzf openresty-${RESTY_VERSION}.tar.gz \
+    && curl -fSL https://github.com/projecteru2/elb/archive/master.zip -o elb.zip \
+    && unzip elb.zip \
+    && mv elb-master /elb \
+    && mkdir -p /elb/server/logs \
     && cd /tmp/openresty-${RESTY_VERSION} \
     && ./configure -j${RESTY_J} ${_RESTY_CONFIG_DEPS} ${RESTY_CONFIG_OPTIONS} ${RESTY_CONFIG_OPTIONS_MORE} \
     && make -j${RESTY_J} \
@@ -87,11 +90,14 @@ RUN apk add --no-cache --virtual .build-deps \
         openssl-${RESTY_OPENSSL_VERSION}.tar.gz \
         openresty-${RESTY_VERSION}.tar.gz openresty-${RESTY_VERSION} \
         pcre-${RESTY_PCRE_VERSION}.tar.gz pcre-${RESTY_PCRE_VERSION} \
+        master.zip ngx_http_dyups_module-master \
+        elb.zip \
     && apk del .build-deps \
-    && ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log \
-    && ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log
+    && ln -sf /dev/stdout /elb/server/logs/access.log \
+    && ln -sf /dev/stderr /elb/server/logs/error.log
 
 # Add additional binaries into PATH for convenience
 ENV PATH=$PATH:/usr/local/openresty/luajit/bin/:/usr/local/openresty/nginx/sbin/:/usr/local/openresty/bin/
-
-CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]
+WORKDIR /elb
+LABEL ERU=1 version=latest
+CMD ["/usr/local/openresty/bin/openresty", "-p", "/elb/server", "-c", "/elb/conf/release.conf"]
