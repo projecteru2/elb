@@ -1,9 +1,33 @@
-Erulb 经历了若干次改动
+Changelog
+==========
 
-CMGS写了第一版（代号 洪武）
+### 洪武
 
-随后写了第二版（代号 朱标 貌似这个版本没有上线过）
+by CMGS
 
-六子写了pathlb（代号 建文）
+simply load router table from API.
 
-现在是第三版（代号 永乐 ），增加动态分流功能
+### 朱标
+
+by CMGS
+
+load router table from redis by pubsub.
+this version never be used.
+
+### 建文
+
+by tonicbupt
+
+load from API, simply rewrite path.
+
+### 永乐
+
+by ZhangYet
+
+Add a complex route protocol, used in production. However this version is not good, code is messy, can not load data from permanent storage.
+
+### 万历
+
+by CMGS
+
+rewrite whole code. load data from etcd, add a new simple and readable route protocol for human.
