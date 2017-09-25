@@ -6,9 +6,7 @@ local keys = rules:get_keys()
 local result = {}
 for i = 1, #keys do
     local key = keys[i]
-    local subs = utils.split(key, '/')
-    local domain = subs[#subs]
-    local key = string.format(config.DOMAIN_KEY, config.NAME, domain)
+    local domain = utils.real_key(key)
     result[domain] = cjson.decode(rules:get(key))
 end
 utils.say_msg_and_exit(ngx.HTTP_OK, result)

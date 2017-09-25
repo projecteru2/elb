@@ -1,5 +1,6 @@
 local _M = {}
 local cjson = require 'cjson'
+local dyups = require "ngx.dyups"
 
 function _M.split(str, separator, max, regex)
     assert(separator ~= '')
@@ -24,6 +25,35 @@ function _M.split(str, separator, max, regex)
     end
 
     return record
+end
+
+function _M.set_upstream(backend_name, servers_str)
+    local status, err = dyups.update(backend_name, servers_str)
+    if status ~= ngx.HTTP_OK then
+        return false
+    end
+    return true
+end
+
+function _M.real_key(key)
+    local subs = _M.split(key, '/')
+    return subs[#subs]
+end
+
+function _M.servers_str(servers)
+    local server_pattern = "server %s %s;"
+    local data = {}
+    for backend, addition in pairs(servers) do
+        table.insert(data, string.format(server_pattern, backend, addition))
+    end
+    return table.concat(data, '\n')
+end
+
+function _M.load_data(data)
+    if not data or not data['node'] or not data['node']['nodes'] then
+        return nil
+    end
+    return data['node']['nodes']
 end
 
 function _M.read_data()

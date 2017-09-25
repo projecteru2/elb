@@ -1,4 +1,3 @@
-local dyups = require "ngx.dyups"
 local utils = require "resty.utils"
 local string = require 'string'
 
@@ -23,16 +22,11 @@ local function detail()
 end
 
 local function put()
-    local server_pattern = "server %s %s;"
     local data = utils.read_data()
     local upstreams = cjson.decode(data) 
     for backend_name, servers in pairs(upstreams) do
-        local data = {}
-        for backend, addition in pairs(servers) do
-            table.insert(data, string.format(server_pattern, backend, addition))
-        end
-        local status, err = dyups.update(backend_name, table.concat(data, '\n'))
-        if status ~= ngx.HTTP_OK then
+        local servers_str = utils.servers_str(servers)
+        if not utils.set_upstream(backend_name, servers_str) then
             ngx.log(ngx.ERR, 'update upstream failed ', err)
         end
     end
