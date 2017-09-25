@@ -1,6 +1,6 @@
 local _M = {}
 local cjson = require 'cjson'
-local dyups = require "ngx.dyups"
+local dyups = require 'ngx.dyups'
 
 function _M.split(str, separator, max, regex)
     assert(separator ~= '')

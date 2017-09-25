@@ -11,7 +11,6 @@ function _M.process(params)
     else
         ret, sub_path = _M.regex(path, pattern)
     end
-    ngx.log(ngx.ERR, sub_path)
     if not ret then
         return false, nil
     end
