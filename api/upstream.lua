@@ -23,7 +23,7 @@ end
 
 local function put()
     local data = utils.read_data()
-    local upstreams = cjson.decode(data) 
+    local upstreams = cjson.decode(data)
     for backend_name, servers in pairs(upstreams) do
         local servers_str = utils.servers_str(servers)
         if not utils.set_upstream(backend_name, servers_str) then

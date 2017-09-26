@@ -25,7 +25,7 @@ For example:
     "init": "r1",
     "rules": {
         "r1": {"type": "ua", "args": {"fail": "r3", "pattern": "httpie(\\S+)$", "succ": "r4"}},
-        "r2": {"type": "backend", "args": {"servername": "upstrimg1"}},
+        "r2": {"type": "backend", "args": {"servername": "upstream1"}},
         "r3": {"type": "backend", "args": {"servername": "upstream2"}},
         "r4": {"type": "path", "args": {"regex": true, "pattern": "^\\/blog\\/(\\S+)$", "succ": "r2", "fail": "r3", "rewrite": false}}
     },
@@ -53,7 +53,7 @@ ELB have two APIs for managing.
 
 1. Domain API `/__erulb__/domain`
 
-Only support `GET` method, it will response a json which contains domain and it's rules.
+When `GET` this url, it will response a json which contains domain and it's rules.
 
 For example:
 
@@ -113,6 +113,62 @@ Transfer-Encoding: chunked
 }
 ```
 
+If you `PUT` this url, you have to upload a json with domains and it's rule, then ELB will update itself with their rules. For example:
+
+```
+PUT /__erulb__/domain HTTP/1.1
+Accept: application/json
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 305
+Content-Type: application/json
+Host: localhost:8080
+User-Agent: HTTPie/0.9.4
+
+{
+    "localhost": {
+        "init": "r1",
+        "rules": {
+            "r1": {
+                "args": {
+                    "fail": "r3",
+                    "pattern": "^\\/blog\\/(\\S+)$",
+                    "regex": true,
+                    "rewrite": false,
+                    "succ": "r2"
+                },
+                "type": "path"
+            },
+            "r2": {
+                "args": {
+                    "servername": "upstream1"
+                },
+                "type": "backend"
+            },
+            "r3": {
+                "args": {
+                    "servername": "upstream2"
+                },
+                "type": "backend"
+            }
+        }
+    }
+}
+
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: application/json
+Date: Tue, 26 Sep 2017 15:03:03 GMT
+Server: openresty/1.11.2.5
+Transfer-Encoding: chunked
+
+{
+    "msg": "OK"
+}
+```
+
+Then domain `localhost` was added. However, if somebody restart ELB, it will lose. Don't forget to store rules in etcd.
+
 2. Upstream API `/__erulb__/upstream`
 
 If you `GET` this url, elb will response a json which contains upstreams and it's backends like this:
@@ -163,7 +219,7 @@ Transfer-Encoding: chunked
 }
 ```
 
-If you use `PUT` method, you can upload a json with upstreams and it's backends, then ELB will update itself with those upstreams like this:
+If you use `PUT` method, you can upload a json with upstreams and it's backends, then ELB will update itself with their upstreams. For example:
 
 ```
 PUT /__erulb__/upstream HTTP/1.1
