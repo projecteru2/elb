@@ -169,6 +169,36 @@ Transfer-Encoding: chunked
 
 Then domain `localhost` was added. However, if somebody restart ELB, it will lose. Don't forget to store rules in etcd.
 
+If you use `DELETE` method, you can upload a json with domains, then ELB will delete those domains.
+
+```
+DELETE /__erulb__/domain HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 0
+Host: localhost:8080
+User-Agent: HTTPie/0.9.9
+
+[
+    "localhost",
+    "127.0.0.1"
+]
+
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: application/json
+Date: Wed, 27 Sep 2017 06:36:30 GMT
+Server: openresty/1.11.2.5
+Transfer-Encoding: chunked
+
+{
+    "msg": "OK"
+}
+```
+
+Don't forget delete domains data in etcd.
+
 2. Upstream API `/__erulb__/upstream`
 
 If you `GET` this url, elb will response a json which contains upstreams and it's backends like this:
@@ -253,6 +283,38 @@ Transfer-Encoding: chunked
     "msg": "OK"
 }
 ```
+
+If you use `DELETE` method, you can upload a json with upstreams' name, then ELB will delete those upstreams.
+
+```
+DELETE /__erulb__/upstream HTTP/1.1
+Accept: application/json, */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 8
+Content-Type: application/json
+Host: localhost:8080
+User-Agent: HTTPie/0.9.9
+
+[
+    "upstream1",
+    "upstream2"
+]
+
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: application/json
+Date: Wed, 27 Sep 2017 06:34:51 GMT
+Server: openresty/1.11.2.5
+Transfer-Encoding: chunked
+
+{
+    "upstream1": true,
+    "upstream2": true
+}
+```
+
+Don't forget delete upstreams data in etcd.
 
 ### Env
 

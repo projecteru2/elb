@@ -17,7 +17,7 @@ end
 
 local function put()
     local data = utils.read_data()
-    local domains = cjson.decode(data) 
+    local domains = cjson.decode(data)
     for domain, rule in pairs(domains) do
         local key = string.format(config.DOMAIN_KEY, config.NAME, domain)
         rules:set(key, cjson.encode(rule))
@@ -25,10 +25,23 @@ local function put()
     utils.say_msg_and_exit(ngx.HTTP_OK, "OK")
 end
 
-if ngx.var.request_method == 'GET' then 
+local function delete()
+    local data = utils.read_data()
+    local domains = cjson.decode(data)
+    for i = 1, #domains do
+        local domain = domains[i]
+        local key = string.format(config.DOMAIN_KEY, config.NAME, domain)
+        rules:delete(key)
+    end
+    utils.say_msg_and_exit(ngx.HTTP_OK, "OK")
+end
+
+if ngx.var.request_method == 'GET' then
     detail()
 elseif ngx.var.request_method == 'PUT' then
     put()
+elseif ngx.var.request_method == 'DELETE' then
+    delete()
 else
     utils.say_msg_and_exit(ngx.HTTP_FORBIDDEN, "")
 end
