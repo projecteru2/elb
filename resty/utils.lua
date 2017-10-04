@@ -43,7 +43,9 @@ end
 function _M.servers_str(servers)
     local server_pattern = "server %s %s;"
     local data = {}
-    for backend, addition in pairs(servers) do
+    for i = 1, #servers do
+        local backend = _M.real_key(servers[i]['key'])
+        local addition = servers[i]['value']
         table.insert(data, string.format(server_pattern, backend, addition))
     end
     return table.concat(data, '\n')

@@ -37,7 +37,7 @@ function load_data()
         return
     end
     for i = 1, #data do
-        local servers = cjson.decode(data[i]['value'])
+        local servers = data[i]['nodes']
         local backend_name = utils.real_key(data[i]['key'])
         local servers_str = utils.servers_str(servers)
         if not utils.set_upstream(backend_name, servers_str) then

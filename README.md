@@ -36,16 +36,17 @@ You can build a complex filter by multiple rules.
 
 ### Upstream
 
-Upstream data also store in etcd with key `/$ELBNAME/upstreams/$name`.
+Upstream data also store in etcd with key `/$ELBNAME/upstreams/$backend/$server`.
 
 For example
 
-```json
-{
-    "127.0.0.1:8089": "max_fails=2 weight=10",
-    "127.0.0.1:8088": ""
-}
 ```
+etcdctl set /ELB/upstreams/up1/127.0.0.1:8088 ""
+etcdctl set /ELB/upstreams/up1/127.0.0.1:8089 ""
+etcdctl set /ELB/upstreams/up2/127.0.0.1:8089 "max_fails=2 weight=10"
+```
+
+Use dir to store server data will help you to asynchronous active server in upstream.
 
 ### API
 
