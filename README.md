@@ -325,7 +325,7 @@ If etcd and elbname not set, elb will use `127.0.0.1:2379` and `ELB` as default.
 
 But if `STATSD` not set, elb will not calcuate domain status.
 
-### Dockerized ELB
+### Dockerized ELB manually
 
 We suggest you to run elb by ERU, however this [image](https://hub.docker.com/r/projecteru2/elb/) can standalone running.
 
@@ -339,3 +339,27 @@ docker run -d --privileged \
   -e "STATSD=<IP:PORT>" \
   projecteru2/elb
 ```
+
+### Build and Deploy by Eru itself
+
+After we implemented bootstrap in eru2, now you can build and deploy elb with [cli](https://github.com/projecteru2/cli) tool.
+
+1. Test source code and build image
+
+```shell
+<cli_execute_path> --name <image_name> https://goo.gl/WTGT9E
+```
+
+Make sure you can clone code by ssh protocol because libgit2 ask for it. So you need configure core with github certs. After the fresh image was named and tagged, it will be auto pushed to the remote registry which was defined in core.
+
+2. Deploy elb by eru with specific resource.
+
+```shell
+<cli_execute_path> --pod <pod_name> --entry elb --network <network_name> --image <projecteru2/elb>|<your_own_image> [--node <specify_node>] [--cpu 0.3 | --mem 1024000000] https://goo.gl/WTGT9E
+```
+
+Now you will find elb was started.
+
+### Warning
+
+Because overlayfs with CentOS 7 has some issue, do not compile Dockerfile on CentOS 7 with overlayfs if you use early docker befor [this](https://github.com/moby/moby/issues/13108).

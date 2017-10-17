@@ -9,4 +9,5 @@ dump.rdb
 src
 api/develop.lua
 build/*
+build.yaml
 dist/*

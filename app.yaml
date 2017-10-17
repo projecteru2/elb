@@ -1,0 +1,58 @@
+appname: "eru"
+entrypoints:
+  elb:
+    cmd: "/usr/local/openresty/bin/openresty -p /elb/server -c /elb/conf/release.conf"
+    restart: always
+    dir: "/elb"
+    publish:
+      - "80"
+    healthcheck:
+      ports:
+        - "80/http"
+      expected_code: 404
+      url: "/"
+    log_config: "none"
+    privileged: true
+stages:
+  - build
+  - pack
+builds:
+  build:
+    base: "alpine:latest"
+    # envs:
+    #   HTTP_PROXY: <HTTP_PROXY>
+    #   HTTPS_PROXY: <HTTPS_PROXY>
+    #   ETCD: <IP:PORT>
+    #   ELBNAME: <ELBNAME>
+    #   STATSD: <IP:PORT>
+    args:
+      RESTY_VERSION: "1.11.2.5"
+      RESTY_OPENSSL_VERSION: "1.0.2k"
+      RESTY_PCRE_VERSION: "8.40"
+      RESTY_J: "1"
+      RESTY_CONFIG_OPTIONS: "--with-file-aio --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_geoip_module=dynamic --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module=dynamic --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_xslt_module=dynamic --with-ipv6 --with-mail --with-mail_ssl_module --with-md5-asm --with-pcre-jit --with-sha1-asm --with-stream --with-stream_ssl_module --with-threads "
+      RESTY_CONFIG_OPTIONS_MORE: "--add-module=../ngx_http_dyups_module-master"
+      _RESTY_CONFIG_DEPS: "--with-openssl=../openssl-${RESTY_OPENSSL_VERSION} --with-pcre=../pcre-${RESTY_PCRE_VERSION}"
+    labels:
+      ERU: 1
+      version: latest
+      core: 1
+    commands:
+      - apk add --no-cache build-base curl gd-dev geoip-dev libxslt-dev linux-headers make perl-dev readline-dev zlib-dev gd geoip libgcc libxslt zlib
+      - curl -fSL https://github.com/yzprofile/ngx_http_dyups_module/archive/master.zip -o master.zip && unzip master.zip
+      - curl -fSL https://www.openssl.org/source/openssl-${RESTY_OPENSSL_VERSION}.tar.gz -o openssl-${RESTY_OPENSSL_VERSION}.tar.gz && tar xzf openssl-${RESTY_OPENSSL_VERSION}.tar.gz
+      - curl -fSL https://ftp.pcre.org/pub/pcre/pcre-${RESTY_PCRE_VERSION}.tar.gz -o pcre-${RESTY_PCRE_VERSION}.tar.gz && tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz
+      - curl -fSL https://openresty.org/download/openresty-${RESTY_VERSION}.tar.gz -o openresty-${RESTY_VERSION}.tar.gz && tar xzf openresty-${RESTY_VERSION}.tar.gz
+      - cd openresty-${RESTY_VERSION} &&./configure -j${RESTY_J} ${_RESTY_CONFIG_DEPS} ${RESTY_CONFIG_OPTIONS} ${RESTY_CONFIG_OPTIONS_MORE} && make -j${RESTY_J} install
+    cache:
+      /usr/local/openresty: /usr/local/openresty
+  pack:
+    base: "alpine:latest"
+    # only support ssh protocol
+    repo: "git@github.com:projecteru2/elb.git"
+    version: "HEAD"
+    dir: /elb
+    commands:
+      - apk add --no-cache gd geoip libgcc libxslt zlib
+      - mkdir -p server/logs && ln -sf /dev/stdout /elb/server/logs/access.log && ln -sf /dev/stderr /elb/server/logs/error.log
+
