@@ -33,10 +33,6 @@ builds:
       RESTY_CONFIG_OPTIONS: "--with-file-aio --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_geoip_module=dynamic --with-http_gunzip_module --with-http_gzip_static_module --with-http_image_filter_module=dynamic --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_xslt_module=dynamic --with-ipv6 --with-mail --with-mail_ssl_module --with-md5-asm --with-pcre-jit --with-sha1-asm --with-stream --with-stream_ssl_module --with-threads "
       RESTY_CONFIG_OPTIONS_MORE: "--add-module=../ngx_http_dyups_module-master"
       _RESTY_CONFIG_DEPS: "--with-openssl=../openssl-${RESTY_OPENSSL_VERSION} --with-pcre=../pcre-${RESTY_PCRE_VERSION}"
-    labels:
-      ERU: 1
-      version: latest
-      core: 1
     commands:
       - apk add --no-cache build-base curl gd-dev geoip-dev libxslt-dev linux-headers make perl-dev readline-dev zlib-dev gd geoip libgcc libxslt zlib
       - curl -fSL https://github.com/yzprofile/ngx_http_dyups_module/archive/master.zip -o master.zip && unzip master.zip
@@ -47,6 +43,10 @@ builds:
     cache:
       /usr/local/openresty: /usr/local/openresty
   pack:
+    labels:
+      ERU: 1
+      version: latest
+      elb: 1
     base: "alpine:latest"
     # only support ssh protocol
     repo: "git@github.com:projecteru2/elb.git"
