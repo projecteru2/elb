@@ -25,8 +25,13 @@ end
 local function put()
     local data = utils.read_data()
     local upstreams = cjson.decode(data)
+    local server_pattern = "server %s %s;"
     for backend_name, servers in pairs(upstreams) do
-        local servers_str = utils.servers_str(servers)
+        local parts = {}
+        for ip_port, addition in pairs(servers) do
+            table.insert(parts, string.format(server_pattern, ip_port, addition))
+        end
+        local servers_str = table.concat(parts, '\n')
         if not utils.set_upstream(backend_name, servers_str) then
             ngx.log(ngx.ERR, 'update upstream failed ', upstream, err)
         end
