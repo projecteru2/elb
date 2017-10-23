@@ -24,7 +24,7 @@ class Rule(object):
         return {}
 
 
-class UARule(object):
+class UARule(Rule):
     """User-Agent rule checks if user-agent matches `pattern`,
     if success, next rule will be `succ` to process, otherwise `fail` will
     be the next."""
@@ -49,7 +49,7 @@ class UARule(object):
         }
 
 
-class BackendRule(object):
+class BackendRule(Rule):
     """Backend rule is the destination of all rules.
     `servername` will be passed to nginx `proxy_pass`.
     `servername` can be either a name of `upstream`,
@@ -69,7 +69,7 @@ class BackendRule(object):
         }
 
 
-class PathRule(object):
+class PathRule(Rule):
     """Path rule checks if requested path matches `pattern`, `regex` can be
     set to True to indicate that `pattern` is used as a regex.
     `rewrite` and `rewrite` can be used to set `rewrite` in nginx.
@@ -109,9 +109,9 @@ class RuleSet(object):
         1. `init` must be in one of the rules
         2. if any rule has a `succ` or `fail`, must be in one of the rules
         """
-        rulenames = [rule.name for rule in self.rules]
-        next_rulenames = [name for rule in self.rules for name in rule.next()]
-        return self.init in rulenames and set(rulenames) == set(next_rulenames)
+        rulenames = set([rule.name for rule in self.rules])
+        next_rulenames = set([name for rule in self.rules for name in rule.next()])
+        return self.init in rulenames and next_rulenames.issubset(rulenames)
 
     def dump(self):
         if not self.check_rules():
@@ -143,32 +143,32 @@ class ELB(object):
         self.session = requests.Session()
 
     def req(self, method, url, params=None, json=None):
-        resp = self.session.request(method, url, params, json)
+        resp = self.session.request(method, url=url, params=params, json=json)
         if resp.status_code != 200:
             raise ELBRespError(resp.content)
         return resp.json()
 
     def get_upstream(self):
-        url = self.base + '/__elb__/upstream'
+        url = self.base + '/__erulb__/upstream'
         return self.req('GET', url)
 
-    def set_upstream(self, upstream):
-        url = self.base + '/__elb__/upstream'
+    def add_upstream(self, upstream):
+        url = self.base + '/__erulb__/upstream'
         return self.req('PUT', url, json=upstream.dump())
 
     def delete_upstream(self, upstreams):
-        url = self.base + '/__elb__/upstream'
+        url = self.base + '/__erulb__/upstream'
         return self.req('DELETE', url, json=upstreams)
 
     def get_domain_rules(self):
-        url = self.base + '/__elb__/domain'
+        url = self.base + '/__erulb__/domain'
         return self.req('GET', url)
 
-    def put_domain_rules(self, domain, ruleset):
-        url = self.base + '/__elb__/domain'
+    def set_domain_rules(self, domain, ruleset):
+        url = self.base + '/__erulb__/domain'
         json = {domain: ruleset.dump()}
         return self.req('PUT', url, json=json)
 
     def delete_domain_rules(self, domains):
-        url = self.base + '/__elb__/domain'
+        url = self.base + '/__erulb__/domain'
         return self.req('DELETE', url, json=domains)
