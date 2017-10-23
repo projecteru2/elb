@@ -24,3 +24,6 @@ c.set_domain_rules('test.local', ruleset)
 # add upstreams
 c.add_upstream(up1)
 c.add_upstream(up2)
+
+# store in-memory data
+c.dump_to_etcd()

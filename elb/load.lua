@@ -22,6 +22,7 @@ function load_data()
     local data = utils.load_data(etcd_client:get(rules_key))
     if not data then
         ngx.log(ngx.ERR, 'no domain data')
+        mutex:unlock()
         return
     end
     for i = 1, #data do
@@ -34,6 +35,7 @@ function load_data()
     data = utils.load_data(etcd_client:get(upstreams_key))
     if not data then
         ngx.log(ngx.ERR, 'no upstreams data')
+        mutex:unlock()
         return
     end
     for i = 1, #data do
