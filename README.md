@@ -52,7 +52,7 @@ Use dir to store server data will help you to asynchronous active server in upst
 
 ELB have two APIs for managing.
 
-1. Domain API `/__erulb__/domain`
+##### Domain API `/__erulb__/domain`
 
 When `GET` this url, it will response a json which contains domain and it's rules.
 
@@ -200,7 +200,7 @@ Transfer-Encoding: chunked
 
 Don't forget delete domains data in etcd.
 
-2. Upstream API `/__erulb__/upstream`
+##### Upstream API `/__erulb__/upstream`
 
 If you `GET` this url, elb will response a json which contains upstreams and it's backends like this:
 
@@ -316,6 +316,32 @@ Transfer-Encoding: chunked
 ```
 
 Don't forget delete upstreams data in etcd.
+
+##### Dump API `/__erulb__/dump`
+
+`PUT` this url, in-memory data will be dumped into etcd. and next elb will load it automatically from etcd.
+
+```
+PUT /__erulb__/dump HTTP/1.1
+Accept: application/json, */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 115
+Content-Type: application/json
+Host: localhost:8080
+User-Agent: HTTPie/0.9.9
+
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: application/json
+Date: Mon, 25 Sep 2017 09:10:58 GMT
+Server: openresty/1.11.2.5
+Transfer-Encoding: chunked
+
+{
+    "msg": "OK"
+}
+```
 
 ### Env
 

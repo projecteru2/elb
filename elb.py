@@ -172,3 +172,7 @@ class ELB(object):
     def delete_domain_rules(self, domains):
         url = self.base + '/__erulb__/domain'
         return self.req('DELETE', url, json=domains)
+
+    def dump_to_etcd(self):
+        url = self.base + '/__erulb__/dump'
+        return self.req('PUT', url)
