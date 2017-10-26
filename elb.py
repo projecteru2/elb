@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import random
 import requests
 
 
@@ -176,3 +177,25 @@ class ELB(object):
     def dump_to_etcd(self):
         url = self.base + '/__erulb__/dump'
         return self.req('PUT', url)
+
+
+class ELBSet(object):
+    """a set of ELB instances, they share the same etcd"""
+
+    def __init__(self, bases):
+        self.elbs = [ELB(b) for b in bases]
+
+    def __getattr__(self, name):
+        """`get_upstream`, `get_domain_rules`, `dump_to_etcd` only need to call one of these instances.
+        other methods will need to call every instance of els.
+        """
+        if name in ('get_upstream', 'get_domain_rules', 'dump_to_etcd'):
+            e = random.choice(self.elbs)
+            return getattr(e, name)
+
+        elbs = self.elbs
+        def method(*args, **kwargs):
+            for e in elbs:
+                m = getattr(e, name)
+                m(*args, **kwargs)
+        return method
