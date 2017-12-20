@@ -1,0 +1,12 @@
+language: python
+python:
+  - "3.6"
+script: touch whatever
+
+deploy:
+  provider: pypi
+  on:
+    tags: true
+  user: timfeirg
+  password:
+    secure: nNPehvKB8FUxpH8RTVD/2KXAiwMS1cmtTh8i63aWB/c3WRZgfSCWd75sx85OlzFXOWgRHqeTCA0sC91xQ/WcYVzCSWrlK+WGpogcv/A9iT48TObBiY15k2uFDwgvLUv676JM3rOXHnexB9zT91bT2qyl9upVXNyttPInXl//lPXEHOfIPVvQ2H0qjIS322H3jMxhUZRzTjEDOxh6L1bFCdAy9O1H/OhY6aIvx0ugDZef4M/YIECImwQ1WpFzZfYCDimIVlWoDmKq4BrpBBBQ+HEbqFwzYJ97a1lo5c+U0faIuqJBLv8Ii0fP+j6eiOLjqqG1A2ptehKNO849hpdV1Lr6l9YDWl97YKvEsrgPCqjWN6HR5SuLsGV7QfF6ai49Dx0OhBSMk0VdvTnKS0SAtX0x2kTAVOIxT5Vq4zWNWW9cCimwYKlENmq4cybe4V1BLGdrybuuwl3lyXq703Xoap0dAoSLtbZMGetN1/B5NKYDhE5ZAo5xgTwO2O6lKdpUBXo9Rl9ng5sKTlP/DqZ3mypFFElahyWJ6OM2W+tziGeJjbMLR3LdZmaqZSJNnSM9DEo54JUreDlpFfPqzAr7oWr8vg+OCAHVWD6in9bUiBd9NSCHinFHRmTmIZNrUtNUqqrCA3L6iYtD+Qh7udo41wGF744BRH35sDHimrY916c=

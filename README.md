@@ -1,5 +1,9 @@
 Eru load balance
 ================
+
+[![Build Status](https://travis-ci.org/projecteru2/elb.svg?branch=master)](https://travis-ci.org/projecteru2/elb)
+[![Pypi Status](https://img.shields.io/pypi/v/elb.py.svg)](https://pypi.python.org/pypi/elb.py)
+
 ELB (Eru load balance) is based on [openresty](https://openresty.org/en/). In Eru architecture, we use multiple filters to determine which upstream to forward. And by using [ngx_http_dyups_module](https://github.com/yzprofile/ngx_http_dyups_module), [citadel](https://github.com/citadel) can update upstream dynamically.
 
 ### Features
