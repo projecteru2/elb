@@ -194,6 +194,7 @@ class ELBSet(object):
             return getattr(e, name)
 
         elbs = self.elbs
+
         def method(*args, **kwargs):
             for e in elbs:
                 m = getattr(e, name)
