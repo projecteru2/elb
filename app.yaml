@@ -1,4 +1,4 @@
-appname: "eru"
+appname: "elb"
 entrypoints:
   elb:
     cmd: "/usr/local/openresty/bin/openresty -p /elb/server -c /elb/conf/release.conf"
@@ -54,4 +54,3 @@ builds:
     commands:
       - apk add --no-cache gd geoip libgcc libxslt zlib
       - mkdir -p server/logs && ln -sf /dev/stdout /elb/server/logs/access.log && ln -sf /dev/stderr /elb/server/logs/error.log
-
