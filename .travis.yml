@@ -1,7 +1,12 @@
+sudo: required
+
+services:
+  - docker
+
 language: python
 python:
   - "3.6"
-script: touch whatever
+script: python setup.py pytest
 
 deploy:
   provider: pypi

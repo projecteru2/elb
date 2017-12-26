@@ -1,5 +1,6 @@
+.eggs
+.cache
 server
-test*
 *_temp/*
 logs
 dump.rdb
