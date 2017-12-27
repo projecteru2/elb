@@ -7,13 +7,16 @@ import time
 import elb as elbpy
 
 
-TEST_ELB_ADDRESS = '127.0.0.1:8888'
+TEST_ELB_ADDRESS = '127.0.0.1:18888'
 
 
 @pytest.fixture(scope='session')
 def elb_client(request):
-    cmd = 'docker run --name elb_pytest_instance --detach --rm --publish {}:80 projecteru2/elb:latest'.format(TEST_ELB_ADDRESS)
-    assert subprocess.call(cmd.split()) == 0
+    etcd_cmd = 'docker run --name elb_pytest_etcd --detach --rm elcolio/etcd:latest'
+    assert subprocess.call(etcd_cmd.split()) == 0
+
+    elb_cmd = 'docker run --name elb_pytest_instance --link elb_pytest_etcd --detach --rm --publish {}:80 --env ETCD_HOST=elb_pytest_etcd projecteru2/elb:latest'.format(TEST_ELB_ADDRESS)
+    assert subprocess.call(elb_cmd.split()) == 0
     # wait until ELB is alive
     elb_url = 'http://{}'.format(TEST_ELB_ADDRESS)
     tries = 3
@@ -27,7 +30,7 @@ def elb_client(request):
             tries -= 1
 
     def tear_down():
-        cmd = 'docker rm -f elb_pytest_instance'
+        cmd = 'docker rm -f elb_pytest_instance elb_pytest_etcd'
         assert subprocess.call(cmd.split()) == 0
 
     request.addfinalizer(tear_down)
