@@ -17,7 +17,7 @@ with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 # Where the magic happens:
 setup(
     name='elb.py',
-    version='0.0.2',
+    version='0.0.4',
     author='ricebook',
     description=DESCRIPTION,
     long_description=long_description,
