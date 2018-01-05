@@ -24,8 +24,8 @@ def test_upstream_api(elb_client):
     assert elb_client.get_upstream() == {}
     up1 = UpStream('up1', {'127.0.0.1:5000': ''})
     up2 = UpStream('up2', {'127.0.0.1:5001': ''})
-    assert elb_client.add_upstream(up1)['msg'] == 'OK'
-    assert elb_client.add_upstream(up2)['msg'] == 'OK'
+    assert elb_client.set_upstream(up1)['msg'] == 'OK'
+    assert elb_client.set_upstream(up2)['msg'] == 'OK'
     ups = elb_client.get_upstream()
     assert len(ups) == 2
     assert len(ups['up1']) == 1

@@ -153,7 +153,7 @@ class ELB(object):
         url = self.base + '/__erulb__/upstream'
         return self.req('GET', url)
 
-    def add_upstream(self, upstream):
+    def set_upstream(self, upstream):
         url = self.base + '/__erulb__/upstream'
         return self.req('PUT', url, json=upstream.dump())
 
