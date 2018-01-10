@@ -144,7 +144,7 @@ class ELB(object):
         self.session = requests.Session()
 
     def req(self, method, url, params=None, json=None):
-        resp = self.session.request(method, url=url, params=params, json=json)
+        resp = self.session.request(method, url=url, params=params, json=json, timeout=2)
         if resp.status_code != 200:
             raise ELBRespError(resp.content)
         return resp.json()
