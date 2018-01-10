@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import io
 import os
-from setuptools import find_packages, setup
+from setuptools import setup
 
 
 DESCRIPTION = 'ELB python client'
@@ -17,7 +17,7 @@ with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 # Where the magic happens:
 setup(
     name='elb.py',
-    version='0.0.5',
+    version='0.0.6',
     author='ricebook',
     description=DESCRIPTION,
     long_description=long_description,
