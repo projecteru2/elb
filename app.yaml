@@ -38,7 +38,6 @@ builds:
   pack:
     labels:
       ERU: 1
-      version: latest
       elb: 1
     base: "alpine:latest"
     # only support ssh protocol

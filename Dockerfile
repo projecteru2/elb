@@ -99,5 +99,5 @@ RUN apk add --no-cache --virtual .build-deps \
 # Add additional binaries into PATH for convenience
 ENV PATH=$PATH:/usr/local/openresty/luajit/bin/:/usr/local/openresty/nginx/sbin/:/usr/local/openresty/bin/
 WORKDIR /elb
-LABEL ERU=1 version=latest
+LABEL ERU=1
 CMD ["/usr/local/openresty/bin/openresty", "-p", "/elb/server", "-c", "/elb/conf/release.conf"]
