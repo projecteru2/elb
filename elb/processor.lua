@@ -19,7 +19,7 @@ function _M.process(rule)
         ngx.log(ngx.ERR, cjson.encode(rule))
         return nil, ngx.HTTP_BAD_REQUEST
     end
-    while typ ~= 'backend' do
+    while typ ~= 'backend' and typ ~= 'statics' do
         ngx.log(ngx.ERR, typ..' '..cjson.encode(args))
         local f = filter[typ]
         if not f then
@@ -39,7 +39,7 @@ function _M.process(rule)
         end
     end
     -- I hate golang, not check anymore
-    return args['servername'], nil
+    return args, nil
 end
 
 function _M.get_rule(rules, name)

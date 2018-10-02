@@ -21,16 +21,21 @@ function _M.process(params)
 end
 
 function _M.no_regex(path, pattern)
+    -- prefix check
     return string.sub(path, 1, string.len(pattern)) == pattern
 end
 
 function _M.regex(path, pattern)
+    -- regex check
     ngx.log(ngx.ERR, path..' '..pattern)
     local captured, err = ngx.re.match(path, pattern)
-    if err or not captured then
+    if err then
         return false, nil
     end
-    return true, '/'..captured[1]
+    if captured ~= nil and captured[1] then
+        return true, '/'..captured[1]
+    end
+    return true, '/'
 end
 
 return _M
