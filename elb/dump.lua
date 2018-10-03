@@ -24,7 +24,7 @@ local function dump_data()
     for _, rule_key in ipairs(rule_keys) do
         local rule = rules:get(rule_key)
         if rule ~= nil then
-            etcd_client:set(rule_key, rule)
+            etcd_client:set(rule_key, ngx.escape_uri(rule))
         end
     end
 
@@ -46,7 +46,7 @@ local function dump_data()
                 end
                 local addition = table.concat(additions, ' ')
                 local key = string.format(config.UPSTREAM_DOMAIN, config.NAME, up, addr)
-                etcd_client:set(key, addition)
+                etcd_client:set(key, ngx.escape_uri(addition))
             end
         end
     end

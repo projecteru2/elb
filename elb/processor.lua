@@ -19,7 +19,7 @@ function _M.process(rule)
         ngx.log(ngx.ERR, cjson.encode(rule))
         return nil, ngx.HTTP_BAD_REQUEST
     end
-    while typ ~= 'backend' and typ ~= 'statics' do
+    while typ ~= 'backend' do
         ngx.log(ngx.ERR, typ..' '..cjson.encode(args))
         local f = filter[typ]
         if not f then

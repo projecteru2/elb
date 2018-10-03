@@ -33,7 +33,7 @@ function _M.regex(path, pattern)
         return false, nil
     end
     if captured ~= nil and captured[1] then
-        return true, '/'..captured[1]
+        return true, captured[1]
     end
     return true, '/'
 end

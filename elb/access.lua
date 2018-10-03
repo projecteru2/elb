@@ -14,12 +14,13 @@ end
 rule: {
     "init": "r1",
     "rules": {
-        "r0": {
+        "r5": {
             "args": {
                 "path": "/tmp/statics",
-                "expires": "30d"
+                "expires": "30d",
+                "servername": "127.0.0.1:7070"
             },
-            "type": "statics"
+            "type": "backend"
         },
         "r1": {
             "args": {
@@ -62,18 +63,10 @@ end
 
 if args["servername"] ~= nil then
     ngx.var.backend = args["servername"]
-elseif args["path"] ~= nil then
-    local params, err = ngx.req.get_uri_args()
-    if err ~= nil then
-        ngx.log(ngx.ERR, 'get args failed ', err)
-        ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
+    args["servername"] = nil
+    for k, v in pairs(args) do
+        ngx.req.set_header(k, v)
     end
-    params["path"] = args["path"]
-    if args["expires"] ~= nil then
-        params["expires"] = args["expires"]
-    end
-    ngx.req.set_uri_args(params)
-    ngx.var.backend = "127.0.0.1:7070"
 else
     ngx.exit(ngx.HTTP_NOT_FOUND)
 end
