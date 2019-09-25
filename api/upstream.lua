@@ -33,7 +33,7 @@ local function put()
         end
         local servers_str = table.concat(parts, '\n')
         if not utils.set_upstream(backend_name, servers_str) then
-            ngx.log(ngx.ERR, 'update upstream failed ', upstream, err)
+            ngx.log(ngx.ERR, 'update upstream failed ', upstream)
         end
     end
     utils.say_msg_and_exit(ngx.HTTP_OK, 'OK')
